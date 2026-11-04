@@ -1,0 +1,22 @@
+{
+  "id": "cyberpunk2077",
+  "name": "Cyberpunk 2077 Night City HUD",
+  "version": "1.0.0",
+  "author": "Milkyponi",
+  "previewColor": "#FFE600",
+  "downloadUrl": "https://github.com/Milkyponi/ky-poni-themes/releases/download/v1.0.0/cyberpunk2077.zip",
+  "tags": ["Cyberpunk", "Neon HUD", "Sci-Fi", "Glitch"],
+  "presets": {
+    "fontFamily": "Chakra Petch",
+    "fontSize": 17,
+    "textColor": "#FFE600",
+    "recommendedLayout": "horizontal-wide"
+  },
+  "fonts": [
+    {
+      "name": "Chakra Petch",
+      "label": "Chakra Petch (Cyberpunk Tech)",
+      "isGoogleFont": true
+    }
+  ]
+}

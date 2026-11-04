@@ -1,0 +1,161 @@
+/* ========================================================
+   KY-Poni - Cyberpunk 2077 Night City HUD Theme
+   Neon Yellow / Cyan Chamfered Hologram Dialogue Overlay
+   ======================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700;800&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --cp-yellow: #FFE600;
+  --cp-cyan: #00F0FF;
+  --cp-black: #0B0E14;
+  --cp-dark: #121824;
+  --cp-red: #FF003C;
+  --cp-font: 'Chakra Petch', sans-serif;
+  --cp-mono: 'Share Tech Mono', monospace;
+}
+
+#chat-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#chat-canvas.pos-bottom-left { justify-content: flex-end; align-items: flex-start; }
+#chat-canvas.pos-bottom-right { justify-content: flex-end; align-items: flex-end; }
+#chat-canvas.pos-top-left { justify-content: flex-start; align-items: flex-start; }
+#chat-canvas.pos-top-right { justify-content: flex-start; align-items: flex-end; }
+
+#chat-flow {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  width: fit-content;
+  max-width: 100%;
+  pointer-events: none;
+  transform: scale(var(--overlay-scale, 1));
+  will-change: transform;
+}
+
+#chat-canvas.pos-bottom-left #chat-flow { transform-origin: bottom left; align-items: flex-start; }
+#chat-canvas.pos-bottom-right #chat-flow { transform-origin: bottom right; align-items: flex-end; }
+#chat-canvas.pos-top-left #chat-flow { transform-origin: top left; align-items: flex-start; }
+#chat-canvas.pos-top-right #chat-flow { transform-origin: top right; align-items: flex-end; }
+
+/* Horizontal Ticker Layout */
+#chat-canvas.layout-horizontal { overflow-x: hidden; }
+#chat-canvas.layout-horizontal #chat-flow { flex-direction: row; align-items: flex-end; gap: 16px; }
+#chat-canvas.layout-horizontal.pos-top-left #chat-flow,
+#chat-canvas.layout-horizontal.pos-top-right #chat-flow { align-items: flex-start; }
+
+#chat-canvas.layout-horizontal .chat-entry {
+  flex-shrink: 0 !important;
+  width: 460px;
+  max-width: 500px;
+}
+
+/* Chat Entry */
+.chat-entry {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  min-width: 380px;
+  max-width: 540px;
+  animation: cp-glitch-in 0.24s cubic-bezier(0.18, 0.89, 0.32, 1.2) forwards;
+  flex-shrink: 0;
+}
+
+.cp-hud-box {
+  background: rgba(11, 14, 20, 0.88);
+  border: 1.5px solid var(--cp-yellow);
+  box-shadow: 0 0 16px rgba(255, 230, 0, 0.25), inset 0 0 8px rgba(0, 240, 255, 0.1);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  padding: 10px 16px 12px 16px;
+  position: relative;
+  box-sizing: border-box;
+  backdrop-filter: blur(6px);
+}
+
+.cp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 230, 0, 0.25);
+  padding-bottom: 4px;
+}
+
+.cp-author-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cp-holo-tag {
+  color: var(--cp-cyan);
+  font-family: var(--cp-mono);
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+}
+
+.cp-author-name {
+  color: #FFFFFF;
+  font-family: var(--cp-font);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.cp-badge-member {
+  background: var(--cp-cyan);
+  color: #000;
+  font-family: var(--cp-font);
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 2px 6px;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+
+.cp-badge-superchat {
+  background: var(--cp-red);
+  color: #FFF;
+  font-family: var(--cp-font);
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  box-shadow: 0 0 8px rgba(255, 0, 60, 0.6);
+}
+
+.cp-message-body {
+  color: var(--msg-font-color, var(--cp-yellow));
+  font-family: var(--msg-font-family, var(--cp-font));
+  font-size: var(--msg-font-size, 1.15rem);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.3px;
+  word-break: break-word;
+}
+
+@keyframes cp-glitch-in {
+  0% { opacity: 0; transform: translateY(16px) skewX(-12deg); filter: drop-shadow(0 0 12px var(--cp-cyan)); }
+  70% { opacity: 1; transform: translateY(-2px) skewX(2deg); }
+  100% { opacity: 1; transform: translateY(0) skewX(0); }
+}
+
+.chat-entry.is-exiting {
+  animation: cp-glitch-out 0.25s ease-in forwards;
+}
+
+@keyframes cp-glitch-out {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-12px) skewX(12deg); filter: blur(4px); }
+}
