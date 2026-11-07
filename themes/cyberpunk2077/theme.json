@@ -10,7 +10,7 @@
     "fontFamily": "Chakra Petch",
     "fontSize": 17,
     "textColor": "#FFE600",
-    "recommendedLayout": "horizontal-wide"
+    "recommendedLayout": "vertical"
   },
   "fonts": [
     {
