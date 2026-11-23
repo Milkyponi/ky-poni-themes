@@ -1,0 +1,21 @@
+{
+  "id": "aceattorney",
+  "name": "Ace Attorney Courtroom",
+  "version": "1.0.0",
+  "author": "Milkyponi",
+  "previewColor": "#298ABD",
+  "downloadUrl": "https://github.com/Milkyponi/ky-poni-themes/releases/download/v1.1.0/aceattorney.zip",
+  "tags": ["Visual Novel", "Courtroom", "Asset-First", "Serif"],
+  "presets": {
+    "fontFamily": "P052",
+    "fontSize": 16,
+    "textColor": "#F5F7FA",
+    "recommendedLayout": "vertical"
+  },
+  "fonts": [
+    {
+      "name": "P052",
+      "label": "P052 Serif (Ace Attorney HD)"
+    }
+  ]
+}

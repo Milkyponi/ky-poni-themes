@@ -1,0 +1,391 @@
+/* ========================================================
+   KY-Poni - Ace Attorney Courtroom Theme (Asset-First)
+   - Nameplate 3-slice PNG original (cap kiri / mid / cap kanan)
+   - Dialogue box: top strip + seamless 32x32 mid tile + bottom strip
+   - Official HD serif P052 (URW base35) dibundel sebagai preset tema
+   - 4-Tier Dynamic Width (sadar fsize), vertical/ horizontal layout
+   CATATAN KONTRAK: tema ini TIDAK mendeklarasikan `animation` apa pun pada
+   `.chat-entry` maupun `.chat-entry.is-exiting`. Animasi masuk milik
+   `overlay_transitions.css` (core v1.3.1+) dan animasi keluar milik core.
+   ======================================================== */
+
+@font-face {
+  font-family: 'P052';
+  src: url('/themes/aceattorney/assets/fonts/P052-Roman.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'P052';
+  src: url('/themes/aceattorney/assets/fonts/P052-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --aa-navy: #12192B;
+  --aa-navy-deep: #040A16;
+  --aa-cyan: #298ABD;
+  --aa-text: #F5F7FA;
+  --aa-gold: #F5C542;
+  --msg-font-family: 'P052', 'Noto Serif', Georgia, serif;
+  --msg-font-size: 16px;
+  --msg-font-color: #F5F7FA;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent !important;
+  color: var(--aa-text);
+  font-family: 'P052', 'Noto Serif', Georgia, serif;
+}
+
+/* ========================================================
+   OBS Canvas (Viewport Window) + Corner Anchors
+   ======================================================== */
+
+#chat-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#chat-canvas.pos-bottom-left {
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+#chat-canvas.pos-bottom-right {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+#chat-canvas.pos-top-left {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+#chat-canvas.pos-top-right {
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+/* ========================================================
+   Chat Flow Stack (scaled from the active anchor corner)
+   ======================================================== */
+
+#chat-flow {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  width: fit-content;
+  max-width: 100%;
+  pointer-events: none;
+  transform: scale(var(--overlay-scale, 1));
+  will-change: transform;
+}
+
+#chat-canvas.pos-bottom-left #chat-flow {
+  transform-origin: bottom left;
+  align-items: flex-start;
+}
+#chat-canvas.pos-bottom-right #chat-flow {
+  transform-origin: bottom right;
+  align-items: flex-end;
+}
+#chat-canvas.pos-top-left #chat-flow {
+  transform-origin: top left;
+  align-items: flex-start;
+}
+#chat-canvas.pos-top-right #chat-flow {
+  transform-origin: top right;
+  align-items: flex-end;
+}
+
+/* ========================================================
+   Horizontal Layout (flow berjalan ke samping, lebar tetap)
+   ======================================================== */
+
+#chat-canvas.layout-horizontal {
+  flex-direction: row;
+  overflow-x: hidden;
+}
+
+#chat-canvas.layout-horizontal #chat-flow {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 16px;
+  max-width: none;
+}
+
+#chat-canvas.layout-horizontal.pos-top-left #chat-flow,
+#chat-canvas.layout-horizontal.pos-top-right #chat-flow {
+  align-items: flex-start;
+}
+
+/* Anchor horizontal: pos-*-left menumpuk dari KIRI, pos-*-right dari KANAN.
+   Tanpa ini, `justify-content` kolom bawaan (flex-end) mendorong tumpukan
+   ke kanan meski anchor-nya kiri. */
+#chat-canvas.layout-horizontal.pos-bottom-left,
+#chat-canvas.layout-horizontal.pos-top-left {
+  justify-content: flex-start;
+}
+#chat-canvas.layout-horizontal.pos-bottom-right,
+#chat-canvas.layout-horizontal.pos-top-right {
+  justify-content: flex-end;
+}
+
+#chat-canvas.layout-horizontal.pos-bottom-left #chat-flow,
+#chat-canvas.layout-horizontal.pos-top-left #chat-flow {
+  justify-content: flex-start;
+}
+
+#chat-canvas.layout-horizontal.pos-bottom-right #chat-flow,
+#chat-canvas.layout-horizontal.pos-top-right #chat-flow {
+  justify-content: flex-end;
+}
+
+#chat-canvas.layout-horizontal .chat-entry {
+  flex-shrink: 0 !important;
+  width: 480px !important;
+  max-width: 480px !important;
+}
+
+/* ========================================================
+   Chat Entry — 4-Tier Dynamic Width
+   ======================================================== */
+
+.chat-entry {
+  position: relative;
+  flex-shrink: 0;
+  width: 460px;
+  max-width: 100%;
+  margin: 0;
+  /* Ruang agar paruh atas nameplate (top:-14px) tidak terpotong. */
+  padding-top: 14px;
+  pointer-events: none;
+}
+
+.chat-entry.tier-1 {
+  width: 460px;
+  max-width: 100%;
+}
+.chat-entry.tier-2 {
+  width: 540px;
+  max-width: 100%;
+}
+.chat-entry.tier-3 {
+  width: 620px;
+  max-width: 100%;
+}
+.chat-entry.tier-4 {
+  width: 680px;
+  max-width: 100%;
+}
+
+/* ========================================================
+   Dialogue Box (top strip / mid tile / bottom strip skin)
+   ======================================================== */
+
+.aa-dialogue-box {
+  position: relative;
+  width: 100%;
+  min-height: 112px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  filter: drop-shadow(0 6px 14px rgba(4, 10, 22, 0.72));
+}
+
+.aa-box-skin {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.aa-box-top {
+  height: 6px;
+  flex-shrink: 0;
+  background: url('/themes/aceattorney/assets/slices/aa_box_top.png') repeat-x left top / auto 100%;
+}
+
+.aa-box-mid {
+  flex: 1;
+  margin: -1px 0;
+  background: url('/themes/aceattorney/assets/slices/aa_box_mid_tile.png') repeat;
+}
+
+.aa-box-bot {
+  height: 6px;
+  flex-shrink: 0;
+  background: url('/themes/aceattorney/assets/slices/aa_box_bot.png') repeat-x left bottom / auto 100%;
+}
+
+/* Super Chat memakai trim emas */
+.chat-entry.is-superchat .aa-box-top {
+  background: url('/themes/aceattorney/assets/slices/aa_box_top_sc.png') repeat-x left top / auto 100%;
+}
+.chat-entry.is-superchat .aa-box-bot {
+  background: url('/themes/aceattorney/assets/slices/aa_box_bot_sc.png') repeat-x left bottom / auto 100%;
+}
+
+/* ========================================================
+   Top Bar — Nameplate (3-piece) + Badge
+   ======================================================== */
+
+.aa-top-bar {
+  position: absolute;
+  top: -14px;
+  left: 28px;
+  right: 20px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.aa-nameplate {
+  display: inline-flex;
+  align-items: stretch;
+  height: 28px;
+  min-width: 0;
+  max-width: 100%;
+  flex: 0 1 auto;
+  overflow: hidden;
+}
+
+.aa-np-left {
+  width: 17px;
+  height: 28px;
+  flex-shrink: 0;
+  background: url('/themes/aceattorney/assets/slices/aa_name_left_2x.png') no-repeat center / 100% 100%;
+}
+
+.aa-np-mid {
+  flex: 0 1 auto;
+  min-width: 52px;
+  height: 28px;
+  padding: 0 12px;
+  margin: 0 -1px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: url('/themes/aceattorney/assets/slices/aa_name_mid_2x.png') repeat-x center / auto 100%;
+}
+
+.aa-np-right {
+  width: 17px;
+  height: 28px;
+  flex-shrink: 0;
+  background: url('/themes/aceattorney/assets/slices/aa_name_right_2x.png') no-repeat center / 100% 100%;
+}
+
+.aa-author-name {
+  max-width: 100%;
+  min-width: 0;
+  color: #FFFFFF;
+  font-family: 'P052', 'Noto Serif', Georgia, serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(6, 16, 32, 0.85);
+}
+
+.aa-badge {
+  flex-shrink: 0;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.aa-badge-member {
+  background: #10B981;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+.aa-badge-superchat {
+  background: #F5C542;
+  color: #12192B;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* ========================================================
+   Message Area — vertical centering (nudge FigCraft)
+   ======================================================== */
+
+.aa-message-box {
+  position: relative;
+  z-index: 3;
+  flex: 1;
+  min-height: 112px;
+  box-sizing: border-box;
+  padding: 28px 44px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.aa-message-text {
+  width: 100%;
+  color: var(--msg-font-color, #F5F7FA);
+  font-family: var(--msg-font-family, 'P052', 'Noto Serif', Georgia, serif);
+  font-size: var(--msg-font-size, 16px);
+  font-weight: 400;
+  line-height: 1.38;
+  letter-spacing: 0.2px;
+  word-break: break-word;
+  white-space: pre-wrap;
+  text-shadow: 0 1px 2px rgba(4, 10, 22, 0.85);
+}
+
+/* ========================================================
+   Next-line chevron (dekoratif)
+   ======================================================== */
+
+.aa-chevron {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  width: 18px;
+  height: 14px;
+  z-index: 4;
+  pointer-events: none;
+  background: url('/themes/aceattorney/assets/slices/aa_chevron.png') no-repeat center / contain;
+}

@@ -10,6 +10,7 @@ This repository serves as the remote catalog distribution hub for KY-Poni deskto
 | :--- | :--- | :--- | :--- | :--- |
 | `undertale` | Undertale Retro Box | 8-Bit Pixel RPG | `VT323` | `#FFFFFF` |
 | `cyberpunk2077` | Cyberpunk 2077 Night City HUD | Neon Sci-Fi HUD | `Chakra Petch` | `#FFE600` |
+| `aceattorney` | Ace Attorney Courtroom | Visual Novel Courtroom (Asset-First) | `P052` | `#F5F7FA` |
 
 ---
 
