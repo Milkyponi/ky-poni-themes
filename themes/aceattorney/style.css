@@ -54,7 +54,20 @@ body {
 }
 
 /* ========================================================
-   OBS Canvas (Viewport Window) + Corner Anchors
+   OBS Canvas (Viewport Window) + Corner Anchors — v1.0.1
+   --------------------------------------------------------
+   KY-Poni v1.4.2 memuat `/overlay_layout.css` SETELAH stylesheet tema, jadi
+   blok ini adalah JARING KOMPATIBILITAS untuk biner v1.4.0/v1.4.1 (yang belum
+   punya core layout). Nilainya identik dengan core agar tidak ada dua
+   keputusan layout yang berbeda.
+
+   BUG YANG DIPERBAIKI (v1.0.0): `#chat-canvas.layout-horizontal` sempat
+   memaksa `flex-direction: row` pada KANVAS, ditambah override
+   `justify-content` pada `#chat-canvas.layout-horizontal.pos-*`. Akibatnya
+   di mode horizontal 4 sudut anchor runtuh (tumpukan tidak lagi menempel
+   di sudut yang dipilih). Kini `#chat-canvas` SELALU `flex-direction:
+   column` di kedua mode — sama persis dengan pola persona5/persona3reload —
+   dan HANYA `#chat-flow` yang menjadi baris di mode horizontal.
    ======================================================== */
 
 #chat-canvas {
@@ -70,6 +83,8 @@ body {
   pointer-events: none;
 }
 
+/* Screen Anchor Positions — sama untuk mode vertical & horizontal,
+   karena kanvas selalu kolom. */
 #chat-canvas.pos-bottom-left {
   justify-content: flex-end;
   align-items: flex-start;
@@ -121,11 +136,15 @@ body {
 }
 
 /* ========================================================
-   Horizontal Layout (flow berjalan ke samping, lebar tetap)
+   Horizontal Layout (flow berjalan ke samping)
+   --------------------------------------------------------
+   Kanvas TETAP kolom: `pos-bottom-*` = justify-content flex-end,
+   `pos-top-*` = flex-start, `pos-*-left` = align-items flex-start,
+   `pos-*-right` = align-items flex-end (sudah di atas). Hanya flow ini
+   yang berubah menjadi baris.
    ======================================================== */
 
 #chat-canvas.layout-horizontal {
-  flex-direction: row;
   overflow-x: hidden;
 }
 
@@ -133,24 +152,12 @@ body {
   flex-direction: row;
   align-items: flex-end;
   gap: 16px;
-  max-width: none;
+  max-width: 100%;
 }
 
 #chat-canvas.layout-horizontal.pos-top-left #chat-flow,
 #chat-canvas.layout-horizontal.pos-top-right #chat-flow {
   align-items: flex-start;
-}
-
-/* Anchor horizontal: pos-*-left menumpuk dari KIRI, pos-*-right dari KANAN.
-   Tanpa ini, `justify-content` kolom bawaan (flex-end) mendorong tumpukan
-   ke kanan meski anchor-nya kiri. */
-#chat-canvas.layout-horizontal.pos-bottom-left,
-#chat-canvas.layout-horizontal.pos-top-left {
-  justify-content: flex-start;
-}
-#chat-canvas.layout-horizontal.pos-bottom-right,
-#chat-canvas.layout-horizontal.pos-top-right {
-  justify-content: flex-end;
 }
 
 #chat-canvas.layout-horizontal.pos-bottom-left #chat-flow,
