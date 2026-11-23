@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "Milkyponi",
   "previewColor": "#298ABD",
-  "downloadUrl": "https://github.com/Milkyponi/ky-poni-themes/releases/download/v1.1.0/aceattorney.zip",
+  "downloadUrl": "https://raw.githubusercontent.com/Milkyponi/ky-poni-themes/main/dist/aceattorney.zip",
   "tags": ["Visual Novel", "Courtroom", "Asset-First", "Serif"],
   "presets": {
     "fontFamily": "P052",
