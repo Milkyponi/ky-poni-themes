@@ -1,0 +1,452 @@
+/* ========================================================
+   KY-Poni - Among Us Meeting Chat Theme (Asset-First)
+   - 9-slice 3-column skin dari PNG original 2x (au_*.png)
+   - 16 crewmate sprite asli (144x136 RGBA) sebagai avatar
+   - Liberation Sans dibundel lokal (tanpa CDN font internet)
+   - 4-Tier Dynamic Width (sadar fsize), vertical/horizontal layout
+
+   CATATAN KONTRAK: tema ini TIDAK mendeklarasikan aturan animasi masuk/keluar
+   apa pun pada `.chat-entry`. Animasi masuk milik `overlay_transitions.css`
+   (core v1.3.1+) dan animasi keluar milik core. Blok `#chat-canvas` /
+   `#chat-flow` di bawah adalah JARING KOMPATIBILITAS untuk biner
+   v1.4.0/v1.4.1 dan nilainya identik dengan core `overlay_layout.css`
+   (dimuat core SETELAH stylesheet tema sejak v1.4.2).
+   ======================================================== */
+
+@font-face {
+  font-family: 'Liberation Sans';
+  src: url('/themes/amongus/assets/fonts/LiberationSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Liberation Sans';
+  src: url('/themes/amongus/assets/fonts/LiberationSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --au-orange: #F57D0D;
+  --au-ink: #1F2025;
+  --au-white: #FFFFFF;
+  --au-superchat: #F5C542;
+  --au-member: #15803D;
+  --msg-font-family: 'Liberation Sans', Arial, Helvetica, sans-serif;
+  --msg-font-size: 16px;
+  --msg-font-color: #111111;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: transparent !important;
+  color: #111111;
+  font-family: 'Liberation Sans', Arial, Helvetica, sans-serif;
+}
+
+/* ========================================================
+   OBS Canvas (Viewport Window) + Corner Anchors — kompatibilitas
+   --------------------------------------------------------
+   `#chat-canvas` SELALU `flex-direction: column` di kedua mode;
+   hanya `#chat-flow` yang menjadi baris di mode horizontal.
+   ======================================================== */
+
+#chat-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#chat-canvas.pos-bottom-left {
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+#chat-canvas.pos-bottom-right {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+#chat-canvas.pos-top-left {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+#chat-canvas.pos-top-right {
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+/* ========================================================
+   Chat Flow Stack (scaled from the active anchor corner)
+   ======================================================== */
+
+#chat-flow {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  width: fit-content;
+  max-width: 100%;
+  pointer-events: none;
+  transform: scale(var(--overlay-scale, 1));
+  will-change: transform;
+}
+
+#chat-canvas.pos-bottom-left #chat-flow {
+  transform-origin: bottom left;
+  align-items: flex-start;
+}
+#chat-canvas.pos-bottom-right #chat-flow {
+  transform-origin: bottom right;
+  align-items: flex-end;
+}
+#chat-canvas.pos-top-left #chat-flow {
+  transform-origin: top left;
+  align-items: flex-start;
+}
+#chat-canvas.pos-top-right #chat-flow {
+  transform-origin: top right;
+  align-items: flex-end;
+}
+
+/* ========================================================
+   Horizontal Layout (flow berjalan ke samping)
+   ======================================================== */
+
+#chat-canvas.layout-horizontal {
+  overflow-x: hidden;
+}
+
+#chat-canvas.layout-horizontal #chat-flow {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 16px;
+  max-width: 100%;
+}
+
+#chat-canvas.layout-horizontal.pos-top-left #chat-flow,
+#chat-canvas.layout-horizontal.pos-top-right #chat-flow {
+  align-items: flex-start;
+}
+
+#chat-canvas.layout-horizontal.pos-bottom-left #chat-flow,
+#chat-canvas.layout-horizontal.pos-top-left #chat-flow {
+  justify-content: flex-start;
+}
+
+#chat-canvas.layout-horizontal.pos-bottom-right #chat-flow,
+#chat-canvas.layout-horizontal.pos-top-right #chat-flow {
+  justify-content: flex-end;
+}
+
+#chat-canvas.layout-horizontal .chat-entry {
+  flex-shrink: 0 !important;
+  width: 480px !important;
+  max-width: 480px !important;
+}
+
+/* ========================================================
+   Chat Entry — 4-Tier Dynamic Width
+   ======================================================== */
+
+.chat-entry {
+  position: relative;
+  flex-shrink: 0;
+  width: 460px;
+  max-width: 100%;
+  margin: 0;
+  pointer-events: none;
+}
+
+.chat-entry.tier-1 {
+  width: 460px;
+  max-width: 100%;
+}
+.chat-entry.tier-2 {
+  width: 540px;
+  max-width: 100%;
+}
+.chat-entry.tier-3 {
+  width: 620px;
+  max-width: 100%;
+}
+.chat-entry.tier-4 {
+  width: 680px;
+  max-width: 100%;
+}
+
+/* ========================================================
+   9-Slice 3-Column Skin (2x PNG → 24px CSS cap, 6px border)
+   --------------------------------------------------------
+   Cap kiri/kanan 48x48 (2x) → 24x24 CSS. Strip atas/bawah adalah
+   hasil ekstrusi 1 kolom (24x48) dan sisi tengah kiri/kanan hasil
+   ekstrusi 1 baris (48x88), sehingga `background-size: 100% 100%`
+   hanya meregang pada sumbu lurus: nol blur, nol rounding gap.
+   ======================================================== */
+
+.au-skin {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  display: flex;
+  flex-direction: row;
+  filter: drop-shadow(0 6px 12px rgba(4, 8, 20, 0.55));
+}
+
+.au-col-l,
+.au-col-r {
+  width: 24px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.au-col-m {
+  flex: 1;
+  margin: 0 -1px;
+  display: flex;
+  flex-direction: column;
+}
+
+.au-tl,
+.au-tr,
+.au-ml,
+.au-mr,
+.au-bl,
+.au-br,
+.au-tm,
+.au-mc,
+.au-bm {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.au-tl {
+  height: 24px;
+  background-image: url('/themes/amongus/assets/slices/au_tl.png');
+}
+.au-tm {
+  height: 24px;
+  background-image: url('/themes/amongus/assets/slices/au_tm.png');
+}
+.au-tr {
+  height: 24px;
+  background-image: url('/themes/amongus/assets/slices/au_tr.png');
+}
+
+.au-ml {
+  flex: 1;
+  margin: -1px 0;
+  background-image: url('/themes/amongus/assets/slices/au_ml.png');
+}
+.au-mc {
+  flex: 1;
+  margin: -1px 0;
+  background-color: #FFFFFF;
+  background-image: url('/themes/amongus/assets/slices/au_mc.png');
+}
+.au-mr {
+  flex: 1;
+  margin: -1px 0;
+  background-image: url('/themes/amongus/assets/slices/au_mr.png');
+}
+
+.au-bl {
+  height: 24px;
+  background-image: url('/themes/amongus/assets/slices/au_bl.png');
+}
+.au-bm {
+  height: 24px;
+  background-image: url('/themes/amongus/assets/slices/au_bm.png');
+}
+.au-br {
+  height: 24px;
+  background-image: url('/themes/amongus/assets/slices/au_br.png');
+}
+
+/* --- Super Chat: trim EMAS --- */
+.chat-entry.is-superchat .au-tl {
+  background-image: url('/themes/amongus/assets/slices/au_sc_tl.png');
+}
+.chat-entry.is-superchat .au-tm {
+  background-image: url('/themes/amongus/assets/slices/au_sc_tm.png');
+}
+.chat-entry.is-superchat .au-tr {
+  background-image: url('/themes/amongus/assets/slices/au_sc_tr.png');
+}
+.chat-entry.is-superchat .au-ml {
+  background-image: url('/themes/amongus/assets/slices/au_sc_ml.png');
+}
+.chat-entry.is-superchat .au-mc {
+  background-image: url('/themes/amongus/assets/slices/au_sc_mc.png');
+}
+.chat-entry.is-superchat .au-mr {
+  background-image: url('/themes/amongus/assets/slices/au_sc_mr.png');
+}
+.chat-entry.is-superchat .au-bl {
+  background-image: url('/themes/amongus/assets/slices/au_sc_bl.png');
+}
+.chat-entry.is-superchat .au-bm {
+  background-image: url('/themes/amongus/assets/slices/au_sc_bm.png');
+}
+.chat-entry.is-superchat .au-br {
+  background-image: url('/themes/amongus/assets/slices/au_sc_br.png');
+}
+
+/* --- New Member: trim EMERALD --- */
+.chat-entry.is-membership .au-tl {
+  background-image: url('/themes/amongus/assets/slices/au_mem_tl.png');
+}
+.chat-entry.is-membership .au-tm {
+  background-image: url('/themes/amongus/assets/slices/au_mem_tm.png');
+}
+.chat-entry.is-membership .au-tr {
+  background-image: url('/themes/amongus/assets/slices/au_mem_tr.png');
+}
+.chat-entry.is-membership .au-ml {
+  background-image: url('/themes/amongus/assets/slices/au_mem_ml.png');
+}
+.chat-entry.is-membership .au-mc {
+  background-image: url('/themes/amongus/assets/slices/au_mem_mc.png');
+}
+.chat-entry.is-membership .au-mr {
+  background-image: url('/themes/amongus/assets/slices/au_mem_mr.png');
+}
+.chat-entry.is-membership .au-bl {
+  background-image: url('/themes/amongus/assets/slices/au_mem_bl.png');
+}
+.chat-entry.is-membership .au-bm {
+  background-image: url('/themes/amongus/assets/slices/au_mem_bm.png');
+}
+.chat-entry.is-membership .au-br {
+  background-image: url('/themes/amongus/assets/slices/au_mem_br.png');
+}
+
+/* ========================================================
+   Bubble Content — crewmate + username/header + message
+   ======================================================== */
+
+.au-content {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 18px;
+  min-height: 92px;
+  height: auto;
+  padding: 18px 24px 18px 18px;
+}
+
+/* Polish #1: balon tinggi — avatar menempel ke baris username,
+   bukan melayang di tengah koridor putih kosong. */
+.chat-entry.is-tall .au-content {
+  align-items: flex-start;
+  padding: 20px 24px 20px 18px;
+}
+
+.au-avatar {
+  width: 62px;
+  height: 59px;
+  flex-shrink: 0;
+  object-fit: contain;
+  display: block;
+}
+
+.chat-entry.is-tall .au-avatar {
+  margin-top: 2px;
+}
+
+.au-text-col {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.au-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.au-username {
+  color: #FFFFFF;
+  font-family: 'Liberation Sans', Arial, Helvetica, sans-serif;
+  font-size: var(--au-name-font-size, 18px);
+  font-weight: 700;
+  letter-spacing: 0.9px;
+  line-height: 1.25;
+  padding: 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 0 1 auto;
+  -webkit-text-stroke: var(--au-name-stroke, 4.2px) #000000;
+  paint-order: stroke fill;
+}
+
+/* --- Pill badges --- */
+
+.au-badge {
+  flex-shrink: 0;
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 11px;
+  border: 1.5px solid #1F2025;
+  font-family: 'Liberation Sans', Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.au-badge-superchat {
+  background: #F5C542;
+  color: #111111;
+}
+
+/* Polish #2: isi emerald lebih gelap supaya teks putih kontras,
+   sementara border luar balon tetap emerald terang (#26C066). */
+.au-badge-member {
+  background: #15803D;
+  color: #FFFFFF;
+}
+
+.au-message-text {
+  width: 100%;
+  color: var(--msg-font-color, #111111);
+  font-family: var(--msg-font-family, 'Liberation Sans', Arial, Helvetica, sans-serif);
+  font-size: var(--msg-font-size, 16px);
+  font-weight: 400;
+  line-height: 1.38;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

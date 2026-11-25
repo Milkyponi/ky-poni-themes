@@ -1,0 +1,22 @@
+{
+  "id": "amongus",
+  "name": "Among Us Meeting Chat",
+  "version": "1.0.0",
+  "author": "Milkyponi",
+  "previewColor": "#F57D0D",
+  "downloadUrl": "https://raw.githubusercontent.com/Milkyponi/ky-poni-themes/main/dist/amongus.zip",
+  "previewImage": "https://raw.githubusercontent.com/Milkyponi/ky-poni-themes/main/previews/amongus.png",
+  "tags": ["Among Us", "Party Game", "16 Colors", "Asset-First"],
+  "presets": {
+    "fontFamily": "Liberation Sans",
+    "fontSize": 16,
+    "textColor": "#111111",
+    "recommendedLayout": "vertical"
+  },
+  "fonts": [
+    {
+      "name": "Liberation Sans",
+      "label": "Liberation Sans (Among Us Chat)"
+    }
+  ]
+}
